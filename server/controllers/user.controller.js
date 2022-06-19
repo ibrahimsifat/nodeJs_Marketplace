@@ -1,23 +1,28 @@
-const User = require("../models/user.model");
+const User = require("../models/User.model");
 const extend = require("lodash/extend");
 const errorHandler = require("./error.controller");
+const bcrypt = require("bcrypt");
 
 const create = async (req, res, next) => {
-  const user = new User(req.body);
   try {
-    await user.save();
-    return res.status(200).json({
+    const user = new User(req.body);
+    // hashing password.(registration)
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    user.password = hashedPassword;
+    const newUser = await user.save();
+    res.status(200).json({
       message: "Successfully signed up!",
+      user: newUser,
     });
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err),
+      error: err.message,
     });
   }
 };
 const list = async (req, res) => {
   try {
-    let users = await User.find().select("name email updated created");
+    let users = await User.find().select("username email updated createdAt");
     res.json(users);
   } catch (err) {
     return res.status(400).json({
@@ -52,7 +57,7 @@ const update = async (req, res, next) => {
     await user.save();
 
     // password undefined
-    user.hashed_password = undefined;
+    user.password = undefined;
     user.salt = undefined;
     res.json(user);
   } catch (err) {

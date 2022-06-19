@@ -4,12 +4,21 @@ const { port, mongoUri } = require("../config/config.js");
 const app = require("./express");
 
 // database connection
-mongoose.Promise = global.Promise;
-mongoose.connect(mongoUri);
+// mongoose.Promise = global.Promise;
+const connectDB = async () => {
+  try {
+    await mongoose.connect(mongoUri);
+    console.log(mongoUri);
+    console.log("database connection Successful");
+  } catch (error) {
+    console.log(error);
+  }
+};
+connectDB();
 // if errors
-mongoose.connection.on("error", () => {
-  throw new Error(`unable to connect to database: ${mongoUri}`);
-});
+// mongoose.connection.on("error", () => {
+//   throw new Error(`unable to connect to database: ${mongoUri}`);
+// });
 
 // listen the app
 app.listen(port, (err) => {
