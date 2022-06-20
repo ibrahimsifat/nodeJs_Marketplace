@@ -20,9 +20,9 @@ function authenticateToken(req, res, next) {
 
 //
 const adminAuth = (req, res, next) => {
-  const token = req.cookies.ibrahim;
+  const token = req.cookies.t;
   if (token) {
-    jwt.verify(token, jwtSecret, (err, decodedToken) => {
+    jwt.verify(token, config.jwtSecret, (err, decodedToken) => {
       if (err) {
         return res.status(401).json({ message: "Not authorized" });
       } else {
