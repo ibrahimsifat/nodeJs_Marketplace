@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { port, mongoUri } = require("../config/config.js");
+const { port, mongoUri } = require("./config/config.js");
 // console.log(port);
 const app = require("./express");
 

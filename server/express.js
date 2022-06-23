@@ -4,9 +4,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
 const helmet = require("helmet");
-
+const devBundle = require("./devBundle");
+const path = require("path");
 // internal imports
-const template = require("../template");
 const authRouter = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 // create app
@@ -18,13 +18,21 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(compress());
 app.use(helmet());
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+devBundle.compile(app);
 
+const CURRENT_WORKING_DIR = process.cwd();
+app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "dist")));
 //routers
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRouter);
-app.get("/dist", (req, res) => {
-  res.status(200).send(template());
+app.get("/health", (req, res) => {
+  res.status(200).send("hello health");
 });
 
 // handle auth related errors

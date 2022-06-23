@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
-const config = require("../../config/config");
+const config = require("../config/config");
 const bcrypt = require("bcrypt");
 const { expressjwt: expressJwt } = require("express-jwt");
 
@@ -10,15 +10,16 @@ const signIn = async (req, res) => {
     if (!user) return res.status("401").json({ error: "User not found" });
     const isMatchedPassword = bcrypt.compare(req.body.password, user.password);
     if (isMatchedPassword) {
-      const token = jwt.sign({ _id: user._id }, config.jwtSecret);
+      const UserPayload = {
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+        created: user.createdAt,
+      };
+      const token = jwt.sign({ ...UserPayload }, config.jwtSecret);
       res.cookie("t", token, { expire: new Date() + 9999 });
       res.status(200).json({
-        token,
-        user: {
-          _id: user._id,
-          name: user.username,
-          email: user.email,
-        },
+        accessToken: token,
       });
     } else {
       return res
@@ -39,13 +40,13 @@ const signOut = (req, res) => {
 
 // check user is login with jwt token
 const requireSignIn = (req, res, next) => {
-  // const authHeader = req.headers["authorization"];
-  // const token = authHeader && authHeader.split(" ")[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   //   console.log(token);
   //   console.log(cookie);
   const cookie = req.cookies.t;
-  if (cookie == null) return res.sendStatus(401);
-  jwt.verify(cookie, config.jwtSecret, (err, user) => {
+  if (token == null) return res.sendStatus(401);
+  jwt.verify(token, config.jwtSecret, (err, user) => {
     if (err) return res.sendStatus(403).json({ error: err.message });
 
     req.tokenUserId = user._id;
@@ -62,7 +63,7 @@ const hasAuthorization = (req, res, next) => {
       if (err) {
         return res.status(401).json({ message: "Not authorized" });
       } else {
-        const authorized = req.tokenUserId == decodedToken._id.toString();
+        const authorized = req.tokenUserId == decodedToken._id;
         if (authorized) {
           next();
         } else {

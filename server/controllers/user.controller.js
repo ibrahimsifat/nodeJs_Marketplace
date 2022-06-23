@@ -1,31 +1,25 @@
 const User = require("../models/User.model");
-const extend = require("lodash/extend");
 const errorHandler = require("./error.controller");
+const { createUserService } = require("../services/user.services");
 const bcrypt = require("bcrypt");
-
+const upload = require("../middlewares/users/avatarUpload");
+const cloudinary = require("../utilities/cloudinary");
 const create = async (req, res, next) => {
   try {
-    const user = new User(req.body);
-    if (req.body.password.length < 6) {
-      return res.status(403).json({ message: "password too short" });
-    }
-    // hashing password.(registration)
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    user.password = hashedPassword;
-    const newUser = await user.save();
+    const newUser = await createUserService(req, res);
     res.status(200).json({
       message: "Successfully signed up!",
-      user: newUser,
+      newUser,
     });
   } catch (err) {
-    return res.status(400).json({
-      error: err.message,
-    });
+    next(err);
   }
 };
 const list = async (req, res) => {
   try {
-    let users = await User.find().select("username email updated createdAt");
+    let users = await User.find().select(
+      "username email updated createdAt avatar"
+    );
     res.json(users);
   } catch (err) {
     return res.status(400).json({
@@ -48,10 +42,14 @@ const userByID = async (req, res, next, id) => {
     });
   }
 };
-const read = (req, res) => {
-  req.profile.password = undefined;
-  req.profile.salt = undefined;
-  return res.json(req.profile);
+const read = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+    res.status(200).json(user);
+  } catch (error) {
+    next(err);
+  }
 };
 const update = async (req, res, next) => {
   try {

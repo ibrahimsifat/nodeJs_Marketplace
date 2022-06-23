@@ -14,6 +14,19 @@ const userSchema = new mongoose.Schema(
       unique: true,
       match: [/.+\@.+\..+/, "Please fill a valid email address"],
     },
+    about: {
+      type: String,
+      trim: true,
+    },
+    avatar: {
+      type: String,
+    },
+    // cloudinary_id: {
+    //   type: String,
+    // },
+
+    // following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+    // followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
     password: {
       type: String,
       required: true,
