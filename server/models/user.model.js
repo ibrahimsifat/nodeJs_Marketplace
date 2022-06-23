@@ -25,8 +25,8 @@ const userSchema = new mongoose.Schema(
     //   type: String,
     // },
 
-    // following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
-    // followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+    following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+    followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
     password: {
       type: String,
       required: true,

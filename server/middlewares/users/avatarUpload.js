@@ -1,4 +1,3 @@
-const uploader = require("../../utilities/singleUploader");
 const multer = require("multer");
 const path = require("path");
 
