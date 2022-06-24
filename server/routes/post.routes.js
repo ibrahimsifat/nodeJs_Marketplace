@@ -1,22 +1,30 @@
 const { requireSignIn } = require("../controllers/auth.controller");
 const postCtrl = require("../controllers/post.controller");
 const postRouter = require("express").Router();
-
-// routes path="/api/posts/by/:userId"
-postRouter.route("/by/:userId").get(requireSignIn, postCtrl.listByUser);
+const upload = require("../middlewares/users/avatarUpload");
 
 //Creating the post
 // routes path="/by/:userId"
-postRouter.route("/new/:userId").post(requireSignIn, postCtrl.create);
+postRouter
+  .route("/new")
+  .post(requireSignIn, upload.single("postImg"), postCtrl.create);
 
-// The photo controller will return the photo data stored in MongoDB as an image file.
-// routes path="/photo/:postId"
-postRouter.route("/photo/:postId").get(postCtrl.photo);
+// routes path="/api/posts/:userId"
+postRouter.route("/myPost").get(requireSignIn, postCtrl.listByUser);
+
+// to set req.post =post
 postRouter.param("postId", postCtrl.postByID);
 
-// delete post
+// routes path="/photo/:postId"
+// The photo controller will return the photo data stored in MongoDB as an image file.
+postRouter.route("/photo/:postId").get(postCtrl.photo);
+
+// get a post by id  delete post
 postRouter
   .route("/:postId")
+  .get(requireSignIn, (req, res) => {
+    res.json(req.post);
+  })
   .delete(requireSignIn, postCtrl.isPoster, postCtrl.deletePost);
 
 // post like

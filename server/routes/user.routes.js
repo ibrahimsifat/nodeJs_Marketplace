@@ -16,7 +16,7 @@ userRouter.route("/findFollowing").get(requireSignIn, userCtrl.findFollowing);
 userRouter
   .route("/")
   .get(userCtrl.list)
-  .post(upload.single("image"), userCtrl.create);
+  .post(upload.single("avatar"), userCtrl.create);
 
 // routes path="/:userId"
 userRouter

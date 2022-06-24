@@ -15,7 +15,6 @@ const createUserService = async (req, res) => {
   const result = await cloudinary.uploader.upload(req.file.path);
   newUser = new User({
     ...req.body,
-
     avatar: result.secure_url,
     // cloudinary_id: result.public_id,
     password: hashedPassword,
