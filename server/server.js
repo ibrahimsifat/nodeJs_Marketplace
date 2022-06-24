@@ -1,27 +1,21 @@
-const mongoose = require("mongoose");
-const { port, mongoUri } = require("./config/config.js");
-// console.log(port);
+const { port } = require("./config/config.js");
+const http = require("http");
 const app = require("./express");
+const { connectDB } = require("./services/connectDB.js");
+const { infoLogger, errorLogger, processRequest } = require("./errorLogger.js");
+// implement error file log and console log and electricSearch
 
-// database connection
-// mongoose.Promise = global.Promise;
-const connectDB = async () => {
-  try {
-    await mongoose.connect(mongoUri);
-    console.log(mongoUri);
-    console.log("database connection Successful");
-  } catch (error) {
-    console.log(error);
-  }
-};
+// console.log(port);
+
 connectDB();
-// if errors
-// mongoose.connection.on("error", () => {
-//   throw new Error(`unable to connect to database: ${mongoUri}`);
-// });
+app.use(processRequest);
+app.use(infoLogger);
 
+const server = http.createServer(app);
+
+app.use(errorLogger);
 // listen the app
-app.listen(port, (err) => {
+server.listen(port, (err) => {
   if (err) {
     console.log(err);
   }

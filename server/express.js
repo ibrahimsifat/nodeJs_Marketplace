@@ -27,8 +27,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 devBundle.compile(app);
 
-const CURRENT_WORKING_DIR = process.cwd();
-app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "dist")));
+// const CURRENT_WORKING_DIR = process.cwd();
+// app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "dist")));
 //routers
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRouter);

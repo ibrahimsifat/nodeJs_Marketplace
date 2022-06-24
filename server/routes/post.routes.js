@@ -37,8 +37,6 @@ postRouter.route("/unlike").put(requireSignIn, postCtrl.unlike);
 postRouter.route("/comment").put(requireSignIn, postCtrl.comment);
 
 // delete comment
-
-//The uncomment controller method will find the relevant post by ID and pull the comment with the deleted comment's ID from the comments array in the post,
 postRouter.route("/uncomment").put(requireSignIn, postCtrl.uncomment);
 
 module.exports = postRouter;
