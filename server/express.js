@@ -9,6 +9,7 @@ const path = require("path");
 // internal imports
 const authRouter = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
+const postRouter = require("./routes/post.routes");
 // create app
 const app = express();
 
@@ -31,7 +32,8 @@ app.use("/dist", express.static(path.join(CURRENT_WORKING_DIR, "dist")));
 //routers
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRouter);
-app.get("/health", (req, res) => {
+app.use("/api/posts", postRouter);
+app.get("/api/health", (req, res) => {
   res.status(200).send("hello health");
 });
 

@@ -5,6 +5,13 @@ const authCtrl = require("../controllers/auth.controller");
 
 const userRouter = express.Router();
 const { requireSignIn, hasAuthorization } = authCtrl;
+
+// routes path="/api/users/findFollowers"
+userRouter.route("/findFollowers").get(requireSignIn, userCtrl.findFollowers);
+
+// routes path="/api/users/findFollowers"
+userRouter.route("/findFollowing").get(requireSignIn, userCtrl.findFollowing);
+
 // routes path="/"
 userRouter
   .route("/")

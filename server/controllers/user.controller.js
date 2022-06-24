@@ -1,9 +1,7 @@
 const User = require("../models/User.model");
 const errorHandler = require("./error.controller");
 const { createUserService } = require("../services/user.services");
-const bcrypt = require("bcrypt");
-const upload = require("../middlewares/users/avatarUpload");
-const cloudinary = require("../utilities/cloudinary");
+
 const create = async (req, res, next) => {
   try {
     const newUser = await createUserService(req, res);
@@ -86,7 +84,7 @@ const remove = async (req, res, next) => {
 /// follower add and remove
 const addFollowing = async (req, res, next) => {
   try {
-    await User.findByIdAndUpdate(req.body.userId, {
+    await User.findByIdAndUpdate(req.profile.userId, {
       $push: { following: req.body.followId },
     });
     next();
@@ -96,12 +94,11 @@ const addFollowing = async (req, res, next) => {
     });
   }
 };
-
 const addFollower = async (req, res) => {
   try {
     let result = await User.findByIdAndUpdate(
       req.body.followId,
-      { $push: { followers: req.body.userId } },
+      { $push: { followers: req.profile.userId } },
       { new: true }
     )
       .populate("following", "_id name")
@@ -117,7 +114,7 @@ const addFollower = async (req, res) => {
 };
 const removeFollowing = async (req, res, next) => {
   try {
-    await User.findByIdAndUpdate(req.body.userId, {
+    await User.findByIdAndUpdate(req.profile.userId, {
       $pull: { following: req.body.unfollowId },
     });
     next();
@@ -131,7 +128,7 @@ const removeFollower = async (req, res) => {
   try {
     let result = await User.findByIdAndUpdate(
       req.body.unfollowId,
-      { $pull: { followers: req.body.userId } },
+      { $pull: { followers: req.profile.userId } },
       { new: true }
     )
       .populate("following", "_id name")
@@ -147,6 +144,34 @@ const removeFollower = async (req, res) => {
   }
 };
 
+// find user followers
+const findFollowers = async (req, res, next) => {
+  let followers = req.profile.followers;
+  followers.push(req.profile.userId);
+  try {
+    let users = await User.find({ _id: { $nin: followers } }).select(
+      "username"
+    );
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// find users following following
+const findFollowing = async (req, res, next) => {
+  let following = req.profile.following;
+  following.push(req.profile._id);
+  try {
+    let users = await User.find({ _id: { $nin: following } }).select(
+      "username"
+    );
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   create,
   userByID,
@@ -158,4 +183,6 @@ module.exports = {
   addFollower,
   removeFollowing,
   removeFollower,
+  findFollowers,
+  findFollowing,
 };

@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const config = require("../config/config");
 const bcrypt = require("bcrypt");
-const { expressjwt: expressJwt } = require("express-jwt");
+
+const error = require("../services/error");
 
 const signIn = async (req, res) => {
   try {
@@ -15,6 +16,8 @@ const signIn = async (req, res) => {
         username: user.username,
         email: user.email,
         created: user.createdAt,
+        followers: user.followers,
+        following: user.following,
       };
       const token = jwt.sign({ ...UserPayload }, config.jwtSecret);
       res.cookie("t", token, { expire: new Date() + 9999 });
@@ -29,13 +32,6 @@ const signIn = async (req, res) => {
   } catch (err) {
     return res.status("401").json({ error: err });
   }
-};
-
-const signOut = (req, res) => {
-  res.clearCookie("t");
-  return res.status("200").json({
-    message: "signed out",
-  });
 };
 
 // check user is login with jwt token
@@ -57,28 +53,37 @@ const requireSignIn = (req, res, next) => {
 
 // user authorized to update and delete own details
 const hasAuthorization = (req, res, next) => {
-  const token = req.cookies.t;
-  if (token) {
-    jwt.verify(token, config.jwtSecret, (err, decodedToken) => {
+  // const token = req.cookies.t;
+  const sessionToken = req.headers["authorization"].split(" ")[1];
+  if (sessionToken) {
+    jwt.verify(sessionToken, config.jwtSecret, (err, decodedToken) => {
       if (err) {
-        return res.status(401).json({ message: "Not authorized" });
+        throw error(401, "Not authorized");
       } else {
-        const authorized = req.tokenUserId == decodedToken._id;
-        if (authorized) {
-          next();
+        const authorized = req.params.userId === decodedToken.userId;
+        console.log(req.params.userId);
+        console.log(decodedToken.userId);
+        console.log(authorized);
+        if (!authorized) {
+          return res
+            .status(403)
+            .json({ error: "User is not authorized for this operation" });
         } else {
-          return res.status("403").json({
-            error: "User is not authorized for this operation",
-          });
+          next();
+          console.log("fast");
         }
       }
     });
   } else {
-    return res.status("403").json({
-      error: "User is not authorized ",
-    });
+    throw error(403, "User is not authorized ");
   }
-  next();
+};
+
+const signOut = (req, res) => {
+  res.clearCookie("t");
+  return res.status("200").json({
+    message: "signed out",
+  });
 };
 
 module.exports = { signIn, signOut, requireSignIn, hasAuthorization };
