@@ -55,13 +55,16 @@ const read = async (req, res, next) => {
 const update = async (req, res, next) => {
   try {
     const filter = { _id: req.params.userId };
+    const { username, email } = req.body;
+    if (email.match(/.+\@.+\..+/))
+      return res.status(400).json({ error: "need verify email" });
     const update = {
-      username: req.body.username,
-      email: req.body.email,
+      username,
+      email,
     };
     const option = { new: true };
     const updatedUser = await User.findOneAndUpdate(filter, update, option);
-    res.status(400).json({
+    res.status(200).json({
       status: "success",
       user: updatedUser,
     });
@@ -172,6 +175,19 @@ const findFollowing = async (req, res, next) => {
   }
 };
 
+//  current user is actually an educator
+const isEducator = (req, res, next) => {
+  const isEducator = req.profile.userId && req.profile.educator;
+  console.log(isEducator);
+  if (!isEducator) {
+    console.log("isEducator", isEducator);
+    return res.status("403").json({
+      error: "User is not an educator",
+    });
+  }
+  next();
+};
+
 module.exports = {
   create,
   userByID,
@@ -185,4 +201,5 @@ module.exports = {
   removeFollower,
   findFollowers,
   findFollowing,
+  isEducator,
 };

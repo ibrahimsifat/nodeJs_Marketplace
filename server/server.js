@@ -9,11 +9,12 @@ const { infoLogger, errorLogger, processRequest } = require("./errorLogger.js");
 
 connectDB();
 app.use(processRequest);
+
+// logger service
 app.use(infoLogger);
-
 const server = http.createServer(app);
-
 app.use(errorLogger);
+
 // listen the app
 server.listen(port, (err) => {
   if (err) {

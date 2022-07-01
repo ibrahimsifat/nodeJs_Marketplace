@@ -18,6 +18,7 @@ const signIn = async (req, res) => {
         created: user.createdAt,
         followers: user.followers,
         following: user.following,
+        educator: user.educator,
       };
       const token = jwt.sign({ ...UserPayload }, config.jwtSecret);
       res.cookie("t", token, { expire: new Date() + 9999 });
@@ -47,6 +48,7 @@ const requireSignIn = (req, res, next) => {
 
     req.tokenUserId = user._id;
     req.profile = user;
+    console.log(req.profile);
     next();
   });
 };

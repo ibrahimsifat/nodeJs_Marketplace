@@ -27,12 +27,15 @@ const userSchema = new mongoose.Schema(
 
     following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
     followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
+    educator: {
+      type: Boolean,
+      default: false,
+    },
     password: {
       type: String,
       required: true,
       required: [true, "Password is required"],
     },
-    salt: String,
   },
   { timestamps: true }
 );

@@ -9,7 +9,8 @@ const path = require("path");
 // internal imports
 const authRouter = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
-const postRouter = require("./routes/post.routes");
+const courseRouter = require("./routes/course.routes");
+const enrollmentRouter = require("./routes/Enrollment.routes");
 // create app
 const app = express();
 
@@ -32,7 +33,10 @@ devBundle.compile(app);
 //routers
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRouter);
-app.use("/api/posts", postRouter);
+// app.use("/api/courses", courseRouter);
+app.use("/api/courses", courseRouter);
+app.use("/api/enrollment", enrollmentRouter);
+
 app.get("/api/health", (req, res) => {
   res.status(200).send("hello health");
 });

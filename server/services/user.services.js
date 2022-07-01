@@ -1,20 +1,24 @@
 const User = require("../models/User.model");
 const bcrypt = require("bcrypt");
-const cloudinary = require("../utilities/cloudinary");
 
+const cloudinary = require("../utilities/cloudinary");
 const createUserService = async (req, res) => {
   let newUser;
+  const { username, email, about, password, educator } = req.body;
   // const user = new User(req.body);
-  if (req.body.password.length < 6) {
+  if (password.length < 6) {
     return res.status(403).json({ message: "password too short" });
   }
   // hashing password.(registration)
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  const hashedPassword = await bcrypt.hash(password, 10);
   // Upload image to cloudinary
-  console.log(req.files);
+  // console.log(req.files);
   const result = await cloudinary.uploader.upload(req.file.path);
   newUser = new User({
-    ...req.body,
+    username,
+    email,
+    about,
+    educator,
     avatar: result.secure_url,
     // cloudinary_id: result.public_id,
     password: hashedPassword,
