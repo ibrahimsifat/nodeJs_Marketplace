@@ -5,12 +5,12 @@ const cors = require("cors");
 const express = require("express");
 const helmet = require("helmet");
 const devBundle = require("./devBundle");
-const path = require("path");
 // internal imports
 const authRouter = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
-const courseRouter = require("./routes/course.routes");
-const enrollmentRouter = require("./routes/Enrollment.routes");
+const shopRouter = require("./routes/shop.routes");
+const productRouter = require("./routes/product.routes");
+
 // create app
 const app = express();
 
@@ -33,9 +33,10 @@ devBundle.compile(app);
 //routers
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRouter);
+app.use("/api/shops", shopRouter);
+app.use("/api/products", productRouter);
 // app.use("/api/courses", courseRouter);
-app.use("/api/courses", courseRouter);
-app.use("/api/enrollment", enrollmentRouter);
+// app.use("/api/courses", courseRouter);
 
 app.get("/api/health", (req, res) => {
   res.status(200).send("hello health");

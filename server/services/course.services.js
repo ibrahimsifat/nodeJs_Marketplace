@@ -17,7 +17,7 @@ const createCourseService = async (req, res) => {
     category,
     image: result.secure_url,
     instructor: req.profile.userId,
-    // cloudinary_id: result.public_id,
+    cloudinary_id: result.public_id,
   });
 
   return await newCourse.save();

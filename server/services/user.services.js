@@ -20,7 +20,7 @@ const createUserService = async (req, res) => {
     about,
     educator,
     avatar: result.secure_url,
-    // cloudinary_id: result.public_id,
+    cloudinary_id: result.public_id,
     password: hashedPassword,
   });
 

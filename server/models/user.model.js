@@ -21,13 +21,10 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String,
     },
-    // cloudinary_id: {
-    //   type: String,
-    // },
-
-    following: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
-    followers: [{ type: mongoose.Schema.ObjectId, ref: "User" }],
-    educator: {
+    cloudinary_id: {
+      type: String,
+    },
+    seller: {
       type: Boolean,
       default: false,
     },
