@@ -99,6 +99,16 @@
             "date": 1656774075594,
             "name": "application-error-2022-07-02-18.log",
             "hash": "36e5b7a619c9cb50b8363bd9bc3459d2046b34bae71f7de70d0e9a3799d04a5b"
+        },
+        {
+            "date": 1656778046992,
+            "name": "application-error-2022-07-02-19.log",
+            "hash": "8075968d102be1a000c1b20ce3a130219063c96eede60a984298612e9154f27a"
+        },
+        {
+            "date": 1656834130025,
+            "name": "application-error-2022-07-03-10.log",
+            "hash": "11500da6318c5341156d3ae91fe433769b59159f6ee12388dc8e03b293007674"
         }
     ],
     "hashType": "sha256"

@@ -86,7 +86,7 @@ const remove = async (req, res, next) => {
   try {
     let shop = req.shop;
     console.log(shop);
-    await cloudinary.uploader.destroy(user.cloudinary_id);
+    await cloudinary.uploader.destroy(shop.cloudinary_id);
     shop.remove();
     await shop.save();
     res.json(shop);

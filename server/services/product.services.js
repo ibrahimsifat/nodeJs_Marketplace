@@ -15,7 +15,7 @@ const createProductService = async (req, res) => {
     description,
     category,
     quantity,
-    shop: req.profile._id,
+    shop: req.shop._id,
     price,
     image: result.secure_url,
     instructor: req.profile.userId,

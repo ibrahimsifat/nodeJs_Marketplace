@@ -8,14 +8,34 @@ const productCtrl = require("../controllers/product.controller");
 const shopCtrl = require("../controllers/shop.controller");
 const upload = require("../middlewares/users/avatarUpload");
 
+productRouter.route("/:productId").get(productCtrl.read);
+productRouter
+  .route("/product/:shopId/:productId")
+  .patch(
+    requireSignIn,
+    shopCtrl.isOwner,
+    upload.single("image"),
+    productCtrl.update
+  )
+  .delete(requireSignIn, shopCtrl.isOwner, productCtrl.remove);
+
+productRouter.route("/latest").get(productCtrl.listLatest);
+productRouter.route("/categories").get(productCtrl.listCategories);
+productRouter.route("/api/products").get(productCtrl.list);
+
 productRouter
   .route("/by/:shopId")
+  .get(productCtrl.listByShop)
   .post(
     requireSignIn,
     shopCtrl.isOwner,
     upload.single("image"),
     productCtrl.create
   );
+
+productRouter.route("/related/:productId").get(productCtrl.listRelated);
+productRouter.param("productId", productCtrl.productByID);
+
 productRouter.param("shopId", shopCtrl.shopByID);
 
 module.exports = productRouter;
