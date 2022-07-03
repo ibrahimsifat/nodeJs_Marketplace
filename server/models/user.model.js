@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    stripe_seller: {},
     password: {
       type: String,
       required: true,

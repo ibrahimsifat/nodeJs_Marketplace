@@ -19,5 +19,9 @@ userRouter
   .patch(requireSignIn, hasAuthorization, userCtrl.update)
   .delete(requireSignIn, hasAuthorization, userCtrl.remove);
 
+userRouter
+  .route("/stripe_auth/:userId")
+  .put(requireSignIn, hasAuthorization, userCtrl.stripe_auth, userCtrl.update);
+
 userRouter.param("userId", userCtrl.userByID);
 module.exports = userRouter;

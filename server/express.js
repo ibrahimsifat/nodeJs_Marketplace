@@ -10,6 +10,7 @@ const authRouter = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const shopRouter = require("./routes/shop.routes");
 const productRouter = require("./routes/product.routes");
+const orderRouter = require("./routes/order.routes");
 
 // create app
 const app = express();
@@ -35,8 +36,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/shops", shopRouter);
 app.use("/api/products", productRouter);
-// app.use("/api/courses", courseRouter);
-// app.use("/api/courses", courseRouter);
+app.use("/api/orders", orderRouter);
 
 app.get("/api/health", (req, res) => {
   res.status(200).send("hello health");
